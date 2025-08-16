@@ -1,0 +1,18 @@
+# Ignore Claude workspace/config
+.claude/
+
+# macOS noise
+.DS_Store
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# Raycast specific files
+raycast-env.d.ts
+
+# misc
+.DS_Store
+
+# VS code
+.vscode

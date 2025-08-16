@@ -1,0 +1,124 @@
+services:
+  granola-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${DOCKER_TARGET:-production}
+      args:
+        NODE_ENV: ${NODE_ENV:-production}
+    image: granola-cli:${DOCKER_TARGET:-production}
+    container_name: granola-cli${COMPOSE_PROFILE:+-${COMPOSE_PROFILE}}
+    restart: unless-stopped
+
+    # Volume mounts for authentication
+    volumes:
+      - "${GRANOLA_CONFIG_PATH:-${HOME}/Library/Application Support/Granola}:/granola-config:ro"
+
+    # Environment variables
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - DEBUG=${DEBUG:-}
+
+    # Default command - can be overridden
+    command: ["--help"]
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "granola", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    profiles: ["production"]
+
+  # Development service variant
+  granola-cli-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    image: granola-cli:development
+    container_name: granola-cli-dev
+    volumes:
+      - "${GRANOLA_CONFIG_PATH:-${HOME}/Library/Application Support/Granola}:/granola-config:ro"
+      # Add source code volume for development
+      - .:/app:cached
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - DEBUG=granola:*
+    # Remove production restrictions for development
+    user: "node"
+    command: ["sleep", "infinity"]
+    profiles: ["development"]
+
+  # Production service variant with enhanced security
+  granola-cli-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: granola-cli:production
+    container_name: granola-cli-prod
+    restart: always
+    
+    volumes:
+      - "${GRANOLA_CONFIG_PATH:-${HOME}/Library/Application Support/Granola}:/granola-config:ro"
+
+    environment:
+      - NODE_ENV=production
+
+    # Enhanced security for production
+    user: "granola"
+    read_only: true
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    security_opt:
+      - no-new-privileges:true
+
+    # Production resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.25"
+        reservations:
+          memory: 64M
+          cpus: "0.1"
+
+    # Production logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
+
+    # Production health check
+    healthcheck:
+      test: ["CMD", "granola", "--version"]
+      interval: 60s
+      timeout: 10s
+      retries: 2
+      start_period: 30s
+
+    command: ["--help"]
+    profiles: ["production"]
+
+networks:
+  default:
+    name: granola-network
+    driver: bridge

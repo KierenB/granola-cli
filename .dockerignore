@@ -1,0 +1,65 @@
+# Git files
+.git
+.gitignore
+
+# Documentation
+*.md
+!README.md
+
+# Node.js
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Development files
+.devcontainer/
+.vscode/
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Docker files (except production)
+Dockerfile
+docker-compose*.yml
+!docker-compose.yml
+
+# Build artifacts (will be built in container)
+bin/
+!bin/granola.js
+
+# Test files
+**/*.test.*
+test/
+tests/
+__tests__/
+
+# Development tools
+.eslintrc*
+.prettierrc*
+tsconfig.json
+jest.config.*
+
+# IDE files
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/

@@ -1,0 +1,36 @@
+{
+  "name": "granola-cli",
+  "version": "1.0.0",
+  "description": "Terminal-based CLI tool replicating Raycast extension functionality.",
+  "main": "bin/granola.js",
+  "bin": {
+    "granola": "./bin/granola.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node bin/granola.js",
+    "setup": "./scripts/setup-cli.sh",
+    "link": "sudo npm link",
+    "docker:dev": "COMPOSE_PROFILES=development docker compose up --build",
+    "docker:prod": "COMPOSE_PROFILES=production docker compose up --build -d",
+    "docker:stop": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:shell": "docker compose exec granola-cli sh"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "axios": "^1.6.0",
+    "ora": "^7.0.1",
+    "chalk": "^5.3.0",
+    "turndown": "^7.1.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.11.0",
+    "@types/turndown": "^5.0.1",
+    "ts-node": "^10.9.0"
+  },
+  "author": "",
+  "license": "MIT"
+}

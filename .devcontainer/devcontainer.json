@@ -1,0 +1,60 @@
+{
+  "name": "Granola CLI DevContainer",
+  // Use consolidated Dockerfile with development target
+  "dockerFile": "../Dockerfile",
+  "build": {
+    "target": "development"
+  },
+  // Build context is the project root
+  "context": "..",
+  
+  // VS Code customizations
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": {
+            "path": "/bin/zsh"
+          }
+        },
+        "typescript.preferences.includePackageJsonAutoImports": "auto",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        }
+      },
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "roo-cline.roo-cline",
+        "RooVeterinaryInc.roo-cline"
+      ]
+    }
+  },
+  
+  // Commands to run after container creation
+  "postCreateCommand": "npm install && chmod +x scripts/setup-cli.sh && ./scripts/setup-cli.sh",
+  
+  // Container configuration
+  "workspaceFolder": "/workspaces/granola-cli",
+  "remoteUser": "node",
+  
+  // Port forwarding (if needed for future development)
+  "forwardPorts": [],
+  
+  // Container environment variables
+  "containerEnv": {
+    "NODE_ENV": "development"
+  },
+  
+  // Mount additional volumes if needed
+  "mounts": [
+    // Persist bash history
+    "source=granola-cli-bashhistory,target=/home/node/.bash_history,type=volume",
+    // Mount host Granola config for authentication (macOS)
+    "source=${localEnv:HOME}/Library/Application Support/Granola,target=/granola-config,type=bind,consistency=cached"
+  ]
+}
